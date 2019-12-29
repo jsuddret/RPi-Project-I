@@ -1,7 +1,12 @@
 from tkinter import *
 from PIL import ImageTk,Image
+from datetime import date
+from datetime import datetime
 import os
 import fileinput
+import sys
+import time
+import Adafruit_DHT
 
 username = ""
 password = ""
@@ -32,53 +37,51 @@ def launch_home_page():
     home.geometry("1020x700+0+0")
     home.configure(bg=background_color)
     
-    degree_symbol = Label(home, text='Temperature', bg=background_color,
-                          fg=label_color, font=("Helvetica", 24))
+    degree_symbol = Button(home, text='Temperature', bg=background_color,
+                           fg=label_color, font=("Helvetica", 24), highlightthickness=0,
+                           highlightbackground=text_color, disabledforeground=label_color)
     degree_symbol.place(x=180, y=70)
-    humidity_symbol = Label(home, text='Humidity', bg=background_color, fg=label_color,
-                            font=("Helvetica", 24))
+    humidity_symbol = Button(home, text='Humidity', bg=background_color, fg=label_color,
+                            font=("Helvetica", 24), highlightthickness=0)
     humidity_symbol.place(x=180, y=180)
-    heart_rate_symbol = Label(home, text="Heartbeat", bg=background_color, fg=label_color,
-                              font=("Helvetica", 24))
-    heart_rate_symbol.place(x=180, y=290)
-    magnetic_field_symbol = Label(home, text = "Magnetic Field", bg=background_color, fg=label_color,
-                                  font=("Helvetica", 24))
-    magnetic_field_symbol.place(x=180, y=400)
     
-    canvas_1 = Canvas(home, bg=background_color, width=50, height=50, highlightthickness=0)
-    canvas_1.pack(expand=1, fill=BOTH)
-    canvas_1.place(x=130, y=65)
+    def clock_tick():
+        time_string = time.strftime('%H:%M:%S')
+        clock.config(text=time_string)
+        clock.after(180,clock_tick)
+        
+    def spawn_clock():
+        clock.place(x=600, y=180)
+        clock_tick()
+        today = date.today()
+        today = today.strftime("%b %d, %Y")
+        day = datetime.today().strftime('%A')
+        day_today = Label(home, font=('Helvetica', 24), bg=background_color, fg=text_color,
+                      text=day)
+        day_today.place(x=670, y=310)
+        date_today = Label(home, font=('Helvetica', 24), bg=background_color, fg=text_color, text=today)
+        date_today.place(x=640, y=400)
+    
+    clock = Label(home,font=('Helvetica', 48), bg=background_color, fg=text_color)
+    spawn_clock()
+    
+    canvas_one = Canvas(home, bg=background_color, width=50, height=50, highlightthickness=0)
+    # canvas_one.pack(expand=1, fill=BOTH)
+    canvas_one.place(x=130, y=65)
     rasp_thumb = Image.open('raspberry.png')
     rasp_thumb = rasp_thumb.resize((50, 50), Image.ANTIALIAS)
     rasp_thumb = ImageTk.PhotoImage(rasp_thumb)
-    canvas_1.create_image(0, 0, image=rasp_thumb, anchor='nw')
-    canvas_2 = Canvas(home, bg=background_color, width=50, height=50, highlightthickness=0)
-    canvas_2.pack(expand=1, fill=BOTH)
-    canvas_2.place(x=130, y=175)
+    canvas_one.create_image(0, 0, image=rasp_thumb, anchor='nw')
+    canvas_two = Canvas(home, bg=background_color, width=50, height=50, highlightthickness=0)
+    canvas_two.pack(expand=1, fill=BOTH)
+    canvas_two.place(x=130, y=175)
     rasp_thumb = Image.open('raspberry.png')
     rasp_thumb = rasp_thumb.resize((50, 50), Image.ANTIALIAS)
     rasp_thumb = ImageTk.PhotoImage(rasp_thumb)
-    canvas_2.create_image(0, 0, image=rasp_thumb, anchor='nw')
-    canvas_3 = Canvas(home, bg=background_color, width=50, height=50, highlightthickness=0)
-    canvas_3.pack(expand=1, fill=BOTH)
-    canvas_3.place(x=130, y=285)
-    rasp_thumb = Image.open('raspberry.png')
-    rasp_thumb = rasp_thumb.resize((50, 50), Image.ANTIALIAS)
-    rasp_thumb = ImageTk.PhotoImage(rasp_thumb)
-    canvas_3.create_image(0, 0, image=rasp_thumb, anchor='nw')
-    canvas_4 = Canvas(home, bg=background_color, width=50, height=50, highlightthickness=0)
-    canvas_4.pack(expand=1, fill=BOTH)
-    canvas_4.place(x=130, y=395)
-    rasp_thumb = Image.open('raspberry.png')
-    rasp_thumb = rasp_thumb.resize((50, 50), Image.ANTIALIAS)
-    rasp_thumb = ImageTk.PhotoImage(rasp_thumb)
-    canvas_4.create_image(0, 0, image=rasp_thumb, anchor='nw')
-
+    canvas_two.create_image(0, 0, image=rasp_thumb, anchor='nw')
     
     degree_val = 00.000
     humidity_val = 00.000
-    heart_rate = 00.000
-    magnetic_field = 00.000
 
     home.mainloop()
     
@@ -220,5 +223,5 @@ def launch_login_page():
     window.mainloop()
 
 
-launch_login_page()
-# launch_home_page()
+# launch_login_page()
+launch_home_page()

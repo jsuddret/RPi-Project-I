@@ -2,6 +2,7 @@ from tkinter import *
 from PIL import ImageTk,Image
 from datetime import date
 from datetime import datetime
+from passlib.context import CryptContext
 import os
 import fileinput
 import sys
@@ -11,15 +12,24 @@ import Adafruit_DHT
 username = ""
 password = ""
 
+# username
 username_info = []
 for line in open('usernames.txt'):
     line = line.strip()
     username_info.append(line)
-    
+   
+# password
 password_info = []
 for line in open('passwords.txt'):
     line = line.strip()
     password_info.append(line)
+    
+# password encryption
+pass_context = CryptContext {
+    schemes=["pbkdf2_sha256"],
+    default="pbkdf2_sha256",
+    pbkdf2_sha256__default_rounds=30000
+}
     
 username = username_info[0]
 password = password_info[0]
